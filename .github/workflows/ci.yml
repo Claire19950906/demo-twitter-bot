@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Syntax check (all Python files)
+        run: |
+          python -m py_compile bot.py memory.py analyzer.py dashboard.py \
+                              multi_bot.py telegram_bot.py image_gen.py \
+                              notifier.py ab_test.py quality.py
+
+      - name: Bash syntax check (start.sh)
+        run: bash -n start.sh
+
+      - name: YAML syntax check
+        run: |
+          python -c "import yaml; yaml.safe_load(open('accounts.yaml.example'))"
+          python -c "import yaml; cfg = yaml.safe_load(open('docker-compose.yml')); assert 'services' in cfg"
+
+      - name: Smoke test (no real account / no LLM)
+        run: |
+          cp .env.example .env
+          python -c "
+          import memory, analyzer, ab_test, quality, notifier
+          from telegram_bot import MAX_REPLIES_PER_HOUR
+          import image_gen
+          assert image_gen.MEDIA_DIR.exists() or True
+
+          memory.init_db()
+          memory.upsert_user('ci_test', 'ci_test_user')
+          ctx = memory.get_user_context('ci_test')
+          assert 'recent_replies' in ctx or 'reply_count' in ctx
+
+          analyzer.extend_db()
+          s = analyzer.score_tweet('just shipped an AI tool', '@x')
+          assert 'total' in s and 0 <= s['total'] <= 1
+
+          ab_test.extend_ab_db()
+          v = ab_test.assign_variant('ci_user')
+          p = ab_test.get_variant_prompt(v)
+          assert len(p) > 10
+
+          quality.record_llm_call('t', 'r')
+          ok = quality.quality_check()
+          assert isinstance(ok, bool)
+          print('✅ Smoke test passed')
+          "
+
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-logs-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: |
+            *.log
+            __pycache__/

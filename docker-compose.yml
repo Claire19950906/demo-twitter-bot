@@ -1,0 +1,61 @@
+version: "3.9"
+
+# Twitter Bot 完整套件 - 一行命令全起
+# 用法:
+#   docker compose up -d           # 后台启动
+#   docker compose logs -f         # 看日志
+#   docker compose down            # 停止
+#   docker compose restart bot     # 重启某个服务
+#
+# 默认是 DRY_RUN 模式 (安全). 要 LIVE 模式:
+#   docker compose run --rm bot python bot.py --live
+#   或在 .env 里设 DRY_RUN=0
+
+services:
+  bot:
+    build: .
+    container_name: twitter-bot
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/app/data         # 数据库 + cookie
+      - ./media:/app/media       # 生成的图片
+      - ./logs:/app/logs         # bot.log + bot.pid
+    healthcheck:
+      test: ["CMD", "test", "-f", "/app/logs/bot.pid"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  dashboard:
+    build: .
+    container_name: twitter-dashboard
+    restart: unless-stopped
+    command: streamlit run dashboard.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data:ro      # 只读, 看数据
+    depends_on:
+      - bot
+
+  telegram:
+    build: .
+    container_name: twitter-telegram
+    restart: unless-stopped
+    command: python telegram_bot.py
+    env_file: .env
+    volumes:
+      - ./data:/app/data
+    profiles: ["telegram"]      # 默认不启, 用 --profile telegram 起
+
+# 用法:
+#   docker compose up -d                      # 只起 bot + dashboard
+#   docker compose --profile telegram up -d   # 加 telegram
+#   docker compose logs -f bot                # 看 bot 日志
+#   docker compose exec bot bash              # 进 bot 容器

@@ -1,0 +1,7 @@
+twikit>=1.0
+openai>=1.0
+python-dotenv>=1.0
+streamlit>=1.30      # WebUI dashboard
+aiohttp>=3.9         # Telegram bot long polling
+httpx>=0.25          # 生图下载
+pyyaml>=6.0          # accounts.yaml 多账号配置

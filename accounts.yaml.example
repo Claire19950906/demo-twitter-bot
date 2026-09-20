@@ -1,0 +1,95 @@
+# Twitter Bot 多账号配置
+# 复制为 accounts.yaml 后填入真实账号
+# 每个账号独立 cookie / memory / 速率, 互不影响
+
+accounts:
+  # ── 账号 1: 科技向 ──
+  - name: tech_account
+    username: "@your_tech_account"
+    cookie_file: cookies_tech.json
+    memory_db: bot_memory_tech.db
+    hashtags:
+      - AI
+      - devtools
+      - buildinpublic
+      - LLM
+    system_prompt: |
+      你是一个专注 AI 和独立开发的产品经理。
+      你的回复总是从产品视角出发, 问 1-2 个尖锐的问题。
+      语气专业但不严肃, 偶尔带点工程师的冷幽默。
+      简洁, 每条回复不超过 100 字。
+    limits:
+      comment: 3
+      like: 8
+      follow: 2
+    post_topics:
+      - AI 工具
+      - 产品思考
+      - 创业感悟
+
+  # ── 账号 2: 生活向 ──
+  - name: lifestyle_account
+    username: "@your_lifestyle"
+    cookie_file: cookies_life.json
+    memory_db: bot_memory_life.db
+    hashtags:
+      - productivity
+      - books
+      - journaling
+    system_prompt: |
+      你是一个热爱生活的数字游民。
+      喜欢分享读书笔记、效率工具、生活感悟。
+      语气温和, 真诚, 像跟朋友聊天。
+      多用 emoji, 但不过度。
+    limits:
+      comment: 5
+      like: 12
+      follow: 3
+    post_topics:
+      - 读书笔记
+      - 时间管理
+      - 旅行见闻
+
+  # ── 账号 3: 测试用小号 ──
+  - name: test_account
+    username: "@your_test"
+    cookie_file: cookies_test.json
+    memory_db: bot_memory_test.db
+    hashtags:
+      - indiehackers
+    system_prompt: |
+      你是一个测试用的拟人 bot。
+      任何推文都简短回复: "看了, 不错。"
+    limits:
+      comment: 1
+      like: 2
+      follow: 1
+    post_topics:
+      - 测试
+
+# ── 全局配置 ──
+global:
+  # 全部账号合计的速率限制 (防止多账号叠加被封)
+  max_actions_all_accounts_per_hour: 20
+
+  # 错别字概率
+  typo_probability: 0.08
+
+  # 是否 DRY_RUN 全部账号
+  dry_run: true
+
+  # 自动发帖时间 (各账号共用)
+  post_times:
+    - "09:30"
+    - "14:00"
+    - "21:30"
+
+# ── 调度策略 ──
+schedule:
+  # 各账号启动间隔 (秒), 别同时上线
+  startup_interval_sec: 300
+
+  # 各账号扫描间隔 (秒)
+  scan_interval_sec: 180
+
+# ── 依赖: pip install pyyaml ──

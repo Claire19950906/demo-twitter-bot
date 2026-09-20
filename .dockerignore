@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Git
+.git/
+.gitignore
+
+# 环境
+.env
+.env.local
+.venv/
+venv/
+env/
+
+# 数据 / 日志 (用 volume 挂载)
+data/
+logs/
+media/
+*.db
+*.log
+
+# 文档 (不需要进 image)
+*.md
+README*
+
+# 测试 / IDE
+.pytest_cache/
+.mypy_cache/
+.vscode/
+.idea/
+
+# 临时
+.DS_Store
+*.swp
+*~
