@@ -1,9 +1,18 @@
 # Twitter/X 拟人自动互动 Bot v4（产品级 + Docker）
 
+<!-- Badges (push to GitHub 后自动生效; 替换 <USER>/<REPO> 为你的地址) -->
+[![CI](https://github.com/<USER>/<REPO>/actions/workflows/ci.yml/badge.svg)](https://github.com/<USER>/<REPO>/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](Dockerfile)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 > 给机械脚本接上 LLM，让它"带脑子"自动拟人互动。
 > 完整产品级：智能打分 · 行为多样性 · 数据分析 · WebUI · 多账号 · Telegram · 自动发图 · A/B 测试 · 质量监控 · Webhook 报警 · Docker 部署。
 >
 > 走的是 **twikit 爬虫**（不需要 API key）+ **DeepSeek/ChatGPT LLM** 路线，10 元钱 / 月跑得动。
+
+> ⚠️ **DISCLAIMER**: Use a **burner account**, not your personal Twitter account. See [SECURITY.md](SECURITY.md).
 
 ## 🎯 它能干什么（v4 全功能）
 
