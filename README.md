@@ -1,7 +1,7 @@
 # Twitter/X 拟人自动互动 Bot v4（产品级 + Docker）
 
-<!-- Badges (push to GitHub 后自动生效; 替换 <USER>/<REPO> 为你的地址) -->
-[![CI](https://github.com/<USER>/<REPO>/actions/workflows/ci.yml/badge.svg)](https://github.com/<USER>/<REPO>/actions/workflows/ci.yml)
+<!-- Badges -->
+[![CI](https://github.com/Claire19950906/demo-twitter-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/Claire19950906/demo-twitter-bot/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 [![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](Dockerfile)
